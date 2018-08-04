@@ -12,6 +12,17 @@ const StudentSchema = new Schema({
         type: String,
         required: true
     },
+    firstname: {
+        type: String,
+        required: true
+    },
+    middlename: {
+        type: String,
+    },
+    email: {
+        type: String,
+        required: true
+    },
     password: {
         type: String,
         required: true
