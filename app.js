@@ -33,7 +33,6 @@ const lecture = require('./routes/api/lecture.js');
 app.use('/api/profile',profile);
 app.use('/api/lecture', lecture);
 
-
 app.get('/', (req, res) => {
     res.json('Welcome to Cooufeeds API');
 });
