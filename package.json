@@ -1,0 +1,29 @@
+{
+  "name": "cooufeeds",
+  "version": "1.0.0",
+  "description": "API backend for cooufeeds",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon app.js",
+    "dev": "npm run server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/Easybuoy/cooufeeds.git"
+  },
+  "author": "Ekunola Ezekiel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/Easybuoy/cooufeeds/issues"
+  },
+  "homepage": "https://gitlab.com/Easybuoy/cooufeeds#README",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "mongoose": "^5.2.6"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3"
+  }
+}
