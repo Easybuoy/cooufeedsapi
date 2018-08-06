@@ -13,7 +13,8 @@ app.use(bodyParser.json());
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Requested-With, Accept, Authorization');
+    // res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Requested-With, Accept, Authorization');
+    res.header('Access-Control-Allow-Headers', '*');
 
     if(req.method === 'OPTIONS'){
         res.header('Access-Control-Allow-Methods', 'POST, GET, PATCH, DELETE, PUT');
@@ -44,14 +45,25 @@ const port = process.env.PORT || 3000;
 const profile = require('./routes/api/profile');
 const lecture = require('./routes/api/lecture.js');
 
-//using routes
-app.use('/api/profile',profile);
-app.use('/api/lecture', lecture);
 
 app.get('/', (req, res) => {
     res.json('Welcome to Cooufeeds API');
 });
 
+
+//using routes
+app.use('/api/profile',profile);
+app.use('/api/lecture', lecture);
+
+
 app.listen(port, () => {
     console.log(`app listening on port ${port}`);
 });
+
+
+app.use((req, res, next) => {
+    const error = new Error('Not Found');
+    error.status();
+});
+
+module.exports = app;
