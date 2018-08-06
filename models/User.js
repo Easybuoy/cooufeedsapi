@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 //Create Schema
 const UserSchema = new Schema({
-    user_id: {
+    matric_no: {
         type: Number,
         sequence_value: 0,  
         required: true
@@ -14,28 +14,31 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    // firstname: {
-    //     type: String,
-    //     required: true
-    // },
-    // middlename: {
-    //     type: String,
-    // },
-    // email:{
-    //     type: String,
-    //     required: true,
-    // },
-    // password: {
-    //     type: String,
-    //     required: true
-    // },
-    // avatar: {
-    //     type: String,
-    // },
-    // type: {
-    //     type: Number,
-    //     required: true
-    // },
+    firstname: {
+        type: String,
+        required: true
+    },
+    middlename: {
+        type: String,
+    },
+    email:{
+        type: String,
+        required: true,
+        unique: true
+    },
+    phone:{
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    status: {
+        type: Number,
+        required: true
+    },
     date: {
         type: Date,
         default: Date.now
