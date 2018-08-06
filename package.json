@@ -21,6 +21,7 @@
   "homepage": "https://gitlab.com/Easybuoy/cooufeeds#README",
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",

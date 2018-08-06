@@ -1,15 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-// const cor
+const jwt = require('jsonwebtoken');
 // const autoIncrement = require('mongoose-auto-increment');
 const app = express();
 
 
 //Body Parser Middleware
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json()); 
-// app.use(cors());
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -43,8 +42,8 @@ console.log('mongodb connected');
 const port = process.env.PORT || 3000;
 
 const profile = require('./routes/api/profile');
-const lecture = require('./routes/api/lecture.js');
-
+const lecture = require('./routes/api/lecture');
+const users = require('./routes/api/users');
 
 app.get('/', (req, res) => {
     res.json('Welcome to Cooufeeds API');
@@ -54,6 +53,7 @@ app.get('/', (req, res) => {
 //using routes
 app.use('/api/profile',profile);
 app.use('/api/lecture', lecture);
+app.use('/api/users', users);
 
 
 app.listen(port, () => {
@@ -63,7 +63,16 @@ app.listen(port, () => {
 
 app.use((req, res, next) => {
     const error = new Error('Not Found');
-    error.status();
+    error.status = 404;
+    next(error);
 });
+
+app.use((error, req, res, next) => {
+    res.status(error.status || 500);
+    res.json({
+        message: error.message
+    });
+});
+
 
 module.exports = app;
