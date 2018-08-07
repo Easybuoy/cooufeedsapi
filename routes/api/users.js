@@ -1,76 +1,134 @@
 const express = require('express');
-const SENDGRID_API_KEY = require('../../config/keys').SENDGRID_API_KEY;
-const validateRegisterInput = require('../../validation/register');
+const SECRET_OR_KEY = require('../../config/keys').SECRET_OR_KEY;
 const veriftToken = require('../../config/verifyToken');
+const bcrypt = require('bcrypt-nodejs');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+
+const validateRegisterInput = require('../../validation/register');
+const validateLoginInput = require('../../validation/login');
 
 const User = require('../../models/User');
 
 // @route   POST api/users/register
 //@desc     Create User
 //@access   Public
-router.post('/register', veriftToken, (req, res) => {
+router.post('/register', (req, res) => {
     const {errors, isValid } = validateRegisterInput(req.body);
-    console.log(req.token);
+    // console.log(req.token);
     //Check validation
     if(!isValid){
         return res.status(400).json(errors);
     }
-
-        return res.json('passed');
-    const user ={
+    let {password, email} = req.body;
+    console.log(email);
+    password = bcrypt.hashSync(password);
+    const user = {
     matric_no: req.body.matric_no,
     surname: req.body.surname,
     firstname: req.body.firstname,
     email: req.body.email,
     phone: req.body.phone,
-    }
+    password: password,
+    status: 1
+    };
 
-    // new Lecture(lecture).save()
-    // .then(lecture => res.json({msg: 'Lecture created', 'data': lecture}))
-    // .catch(err => {
-    //     // console.log(err)
-    //     // res.status(400).json(err);
-    //     res.status(400).json({msg: "Unable to create lecture at this time"});
-    // })
-});
-
-// @route   GET api/lecture/
-//@desc     Get list of all lectures
-//@access   Private
-router.get('/login', veriftToken, (req, res) => {
-    // Lecture.find({status: 1})
-    // .then(lectures => {
-        
-    //     if(lectures.length > 0){
-    //        return res.json(lectures);
-    //     }else{
-    //         return res.json({msg: "No active lectures at this time"});
-    //     }
-    // })
-    // .catch(err => {
-    //     res.status(400).json({msg: "Error getting lectures, please try again."});
-    // });
- });
-
- // @route   POST api/lecture/cancel
-//@desc     Cancel Lecture
-//@access   Private
-router.post('/cancel', (req, res) => {
-    // console.log(req.body)
-    Lecture.findOne({_id: req.body.id})
-    .then(lecture => {
-        
-        if(lecture){
-           lecture.status = 2;
-           lecture.save().then(lecture => res.json({msg: 'Lecture Cancelled Sucessfully'}))
+    User.findOne({email: email})
+    .then((doc) => {
+        if(doc){ 
+            errors.email = 'Email already exists';
+            return res.status(400).json(errors);
         }else{
-            return res.status(400).json({msg: "No lecture found"});
+            new User(user).save()
+            .then((resp) => {
+                return res.json({msg: 'User Registered Successfully', 'data': resp});
+            })
+            .catch((err) => {
+                console.log(err);
+                return res.status(500).json('Error creating user');
+            });
         }
     })
-    .catch(err => {
-        res.status(400).json({msg: "Error cancelling lecture, please try again."});
+    .catch((err) => {
+        return res.json('error');
     });
+});
+
+// @route   GET api/users/login
+//@desc     Login User
+//@access   Public
+router.post('/login', (req, res) => {
+    const {errors, isValid } = validateLoginInput(req.body);
+    
+    if(!isValid){
+        return res.status(400).json(errors);
+    }
+    const {email, password} = req.body;
+    User.findOne({email: email})
+    .then((user) => {
+        if(!user){
+            errors.email = 'User not found';
+          return res.status(404).json(errors);
+        }
+
+        //Check password match
+        bcrypt.compare(password, user.password, (err, match) => {
+                if(err){
+                    errors.msg = 'Unable to login, please try again';
+                    return res.status(400).json(errors);
+                }
+
+                if(match === false){
+                    errors.password = 'Incorrect Password';
+                    return res.status(401).json(errors);
+                }
+                const payload = {
+                    id: user._id,
+                    email: user.email,
+                    phone: user.phone,
+                    surname: user.surname,
+                    firstname: user.firstname,
+                };
+
+                //Sign token
+                jwt.sign(payload, SECRET_OR_KEY, (err, token) => {
+                    if(err){
+                        errors.msg = 'Unable To Login. Please try again';
+                        return res.status(400).json(errors);
+                    }else{
+                        return res.json({
+                            sucess: true,
+                            token: `Bearer ${token}`
+                        });
+                    }
+                });
+        })
+    }).catch((err) => {
+        errors.msg = 'Unable To Login. Please try again';
+        return res.status(400).json(errors);
+    });
+
+
  });
+
+//  // @route   POST api/lecture/cancel
+// //@desc     Cancel Lecture
+// //@access   Private
+// router.post('/cancel', (req, res) => {
+//     // console.log(req.body)
+//     Lecture.findOne({_id: req.body.id})
+//     .then(lecture => {
+        
+//         if(lecture){
+//            lecture.status = 2;
+//            lecture.save().then(lecture => res.json({msg: 'Lecture Cancelled Sucessfully'}))
+//         }else{
+//             return res.status(400).json({msg: "No lecture found"});
+//         }
+//     })
+//     .catch(err => {
+//         res.status(400).json({msg: "Error cancelling lecture, please try again."});
+//     });
+//  });
 
 module.exports = router;

@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 //Create Schema
 const UserSchema = new Schema({
     matric_no: {
-        type: Number,
+        type: String,
         sequence_value: 0,  
         required: true
     },
@@ -24,12 +24,14 @@ const UserSchema = new Schema({
     email:{
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        dropDups: true
     },
     phone:{
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        dropDups: true
     },
     password: {
         type: String,
