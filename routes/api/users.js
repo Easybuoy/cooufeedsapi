@@ -34,7 +34,7 @@ router.post('/register', (req, res) => {
     };
 
     User.findOne({email: email})
-    .then((doc) => {
+    .then((doc) => { 
         if(doc){ 
             errors.email = 'Email already exists';
             return res.status(400).json(errors);
@@ -64,13 +64,17 @@ router.post('/login', (req, res) => {
         return res.status(400).json(errors);
     }
     const {email, password} = req.body;
-    User.findOne({email: email})
+    User.findOne({email: email, })
     .then((user) => {
         if(!user){
             errors.email = 'User not found';
           return res.status(404).json(errors);
         }
 
+        if(user.status !== 1){
+            errors.msg = 'User not active';
+            return res.status(404).json(errors);
+        }
         //Check password match
         bcrypt.compare(password, user.password, (err, match) => {
                 if(err){
