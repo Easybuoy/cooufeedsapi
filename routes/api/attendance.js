@@ -49,7 +49,7 @@ router.post('/', veriftToken, (req, res) => {
                 };
 
 
-                Attendance.find({lecture_id: lecture._id, user_id: authData.user_id})
+                Attendance.findOne({lecture_id: lecture._id, user_id: authData.id})
                 .then(exist => {
                     // Check if user has already attended class
                     if(exist){
