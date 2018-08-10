@@ -44,6 +44,7 @@ const port = process.env.PORT || 3000;
 const profile = require('./routes/api/profile');
 const lecture = require('./routes/api/lecture');
 const users = require('./routes/api/users');
+const attendance = require('./routes/api/attendance');
 
 app.get('/', (req, res) => {
     res.json('Welcome to Cooufeeds API');
@@ -54,6 +55,7 @@ app.get('/', (req, res) => {
 app.use('/api/profile',profile);
 app.use('/api/lecture', lecture);
 app.use('/api/users', users);
+app.use('/api/attendance', attendance);
 
 
 app.listen(port, () => {
