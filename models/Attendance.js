@@ -16,6 +16,10 @@ const AttendanceSchema = new Schema({
         type: String,
         required: true
     },
+    device_id: {
+        type: String,
+        required: true
+    },
     status: {
         type: Number,
         default: 0,
