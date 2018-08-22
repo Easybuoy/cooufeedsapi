@@ -21,7 +21,7 @@ router.post('/', veriftToken, (req, res) => {
         return res.status(400).json(errors);
     }
     
-    jwt.verify(req.token, SECRET_OR_KEY, (err, authData) => {
+    jwt.verify(req.token, SECRET_OR_KEY, (err, authData) => { console.log(authData);
         if(err){
            return res.sendStatus(401);
         }else{ 
