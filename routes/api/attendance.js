@@ -45,34 +45,49 @@ router.post('/', veriftToken, (req, res) => {
                     lecture_id: lecture._id,
                     user_id: authData.id,
                     user_name: fullname,
+                    device_id: req.body.device_id,
                     status: 1
                 };
 
 
-                Attendance.findOne({lecture_id: lecture._id, user_id: authData.id})
-                .then(exist => {
-                    // Check if user has already attended class
-                    if(exist){
-                        return res.status(400).json('Already attended class');
+                Attendance.findOne({device_id: req.body.device_id})
+                .then(existdevice => {
+                    if(existdevice){
+                        return res.status(400).json({msg: 'User already registered on this device'});
                     }
 
-                    new Attendance(attendancedata).save()
-                .then(data => {
-                    let msg = `Successfully attended class ${lecture.course_title}`;
-                   return res.json({msg});
-                })
-                .catch(err => {
-                  return  res.status(400).json({msg: "Unable to save attendance. Try again"});
+                    
+                    Attendance.findOne({lecture_id: lecture._id, user_id: authData.id})
+                    .then(exist => {
+                        // Check if user has already attended class
+                        if(exist){
+                            return res.status(400).json({msg: 'Already attended class'});
+                        }
+    
+                        new Attendance(attendancedata).save()
+                    .then(data => {
+                        let msg = `Successfully attended class ${lecture.course_title}`;
+                       return res.json({msg});
+                    })
+                    .catch(err => {
+                      return  res.status(400).json({msg: "Unable to save attendance. Try again"});
+    
+                    });
+                    })
+                    .catch(err => {
+                        return  res.status(400).json({msg: "Unable to save attendance. Try again"});
+    
+                    });
 
-                });
+
                 })
                 .catch(err => {
                     return  res.status(400).json({msg: "Unable to save attendance. Try again"});
-
                 });
+
+
                 
-                }
-            )
+                })
             .catch(err =>{
                 return  res.status(400).json({msg: "Unable to save attendance. Try again"});
             })
