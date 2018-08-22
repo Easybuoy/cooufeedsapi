@@ -21,7 +21,6 @@ router.post('/register', (req, res) => {
         return res.status(400).json(errors);
     }
     let {password, email} = req.body;
-    console.log(email);
     password = bcrypt.hashSync(password);
     const user = {
     matric_no: req.body.matric_no,
@@ -29,6 +28,7 @@ router.post('/register', (req, res) => {
     firstname: req.body.firstname,
     email: req.body.email,
     phone: req.body.phone,
+    islecturer: req.body.islecturer,
     password: password,
     status: 1
     };
@@ -92,6 +92,8 @@ router.post('/login', (req, res) => {
                     phone: user.phone,
                     surname: user.surname,
                     firstname: user.firstname,
+                    islecturer: user.islecturer,
+                    status: user.status
                 };
 
                 //Sign token
