@@ -43,6 +43,10 @@ router.post('/register', (req, res) => {
     password: password,
     status: 1
     };
+
+    User.findOne({email: email})
+    .then((doc) => { 
+        if(doc){ 
             errors.email = 'Email already exists';
             return res.status(400).json(errors);
         }else{
@@ -58,6 +62,7 @@ router.post('/register', (req, res) => {
             .then((resp) => {
                 return res.json({msg: 'User Registered Successfully', 'data': resp});
             })
+            .catch((err) => {
                 console.log(err);
                 return res.status(500).json('Error creating user');
             });
