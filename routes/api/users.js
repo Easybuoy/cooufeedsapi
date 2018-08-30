@@ -17,36 +17,60 @@ router.post('/register', (req, res) => {
     const {errors, isValid } = validateRegisterInput(req.body);
     // console.log(req.token);
     //Check validation
+    let islecturer, matric_no = 0;
+    if(req.body.islecturer){
+        islecturer = req.body.islecturer;
+    }
+    
+    if(req.body.matric_no){
+        matric_no = req.body.matric_no;
+    }
+
     if(!isValid){
         return res.status(400).json(errors);
     }
-    let {password, email} = req.body;
+
+
+    let {password, email, phone} = req.body;
     password = bcrypt.hashSync(password);
     const user = {
-    matric_no: req.body.matric_no,
+    matric_no: matric_no,
     surname: req.body.surname,
     firstname: req.body.firstname,
     email: req.body.email,
     phone: req.body.phone,
-    islecturer: req.body.islecturer,
+    islecturer: islecturer,
     password: password,
     status: 1
     };
-
-    User.findOne({email: email})
-    .then((doc) => { 
-        if(doc){ 
             errors.email = 'Email already exists';
             return res.status(400).json(errors);
         }else{
-            new User(user).save()
+
+            User.findOne({phone: phone})
+            .then(result => {
+                if(result){
+                    errors.phone = `${phone} already used, Kindly input another phone number`;
+                    return res.status(400).json(errors); 
+                }
+
+                new User(user).save()
             .then((resp) => {
                 return res.json({msg: 'User Registered Successfully', 'data': resp});
+            })
+                console.log(err);
+                return res.status(500).json('Error creating user');
+            });
+
             })
             .catch((err) => {
                 console.log(err);
                 return res.status(500).json('Error creating user');
             });
+
+
+
+            
         }
     })
     .catch((err) => {
