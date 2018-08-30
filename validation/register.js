@@ -9,6 +9,7 @@ module.exports = validateRegisterInput = (data) => {
     data.phone = !isEmpty(data.phone) ? data.phone : '';
     data.password = !isEmpty(data.password) ? data.password : '';
     data.password2 = !isEmpty(data.password2) ? data.password2 : '';
+    data.islecturer = !isEmpty(data.islecturer) ? data.islecturer : '';
 
 
     if(!Validator.isLength(data.surname, {min: 2, max: 30})){
@@ -19,16 +20,28 @@ module.exports = validateRegisterInput = (data) => {
         errors.firstname = 'Firstname must be between 2 and 30 characters';
     }
 
-    if(Validator.isEmpty(data.matric_no)){
-        errors.matric_no = 'Matric No field is required';
+    if(!data.islecturer && Validator.isEmpty(data.matric_no)){
+        // if(Validator.isEmpty(data.matric_no)){
+            errors.matric_no = 'matric_no field is required';
+        // }
+        // 
+        
+    }else{
+        // (!data.islecturer || Validator.isEmpty(data.matric_no)){
+            if(!data.islecturer === 1){
+                if(Validator.isEmpty(data.matric_no)){
+                    errors.matric_no = 'matric_no field is required';
+                }
+            }
     }
 
+
     if(Validator.isEmpty(data.surname)){
-        errors.surname = 'Surname field is required';
+        errors.surname = 'surname field is required';
     }
 
     if(Validator.isEmpty(data.firstname)){
-        errors.firstname = 'Firstname field is required';
+        errors.firstname = 'firstname field is required';
     }
 
     if(!Validator.isEmail(data.email)){
@@ -36,7 +49,7 @@ module.exports = validateRegisterInput = (data) => {
     }
 
     if(Validator.isEmpty(data.email)){
-        errors.email = 'Email field is required';
+        errors.email = 'email field is required';
     }
 
     if(!Validator.isMobilePhone(data.phone, ['en-NG'])){
@@ -44,7 +57,7 @@ module.exports = validateRegisterInput = (data) => {
     }
 
     if(Validator.isEmpty(data.phone)){
-        errors.phone = 'Phone field is required';
+        errors.phone = 'phone field is required';
     }
 
     if(Validator.isEmpty(data.password)){
