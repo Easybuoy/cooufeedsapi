@@ -6,9 +6,9 @@ const Schema = mongoose.Schema;
 //Create Schema
 const UserSchema = new Schema({
     matric_no: {
-        type: String,
-        sequence_value: 0,  
-        required: true
+        type: String,  
+        // required: true,
+        default: 0
     },
     surname: {
         type: String,
